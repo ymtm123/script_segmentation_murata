@@ -3,8 +3,6 @@ import os
 from PIL import Image
 import torch
 import torch.utils.data as data
-from torchvision import transforms
-
 from utils.data_augumentation import Compose, Scale, RandomRotation, RandomMirror, Resize, Normalize_Tensor
 
 

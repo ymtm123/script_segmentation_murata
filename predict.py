@@ -52,7 +52,7 @@ for image_file_path in image_file_paths:
     phase = "val"
     img_transformed, _ = transform(phase, img, anno_class_img)
 
-    # 推論する
+    # 推論
     x = img_transformed.unsqueeze(0)  # ミニバッチ化：torch.Size([1, 3, 216, 216])
     outputs = net(x.to("cuda:0"))
     y = outputs[0]  # yのサイズはtorch.Size([1, 21, 216, 216])

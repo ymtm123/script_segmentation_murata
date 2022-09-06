@@ -67,7 +67,7 @@ net = smp.PSPNet(
 print('ネットワーク設定完了：学習済みの重みをロードしました')
 
 
-# 損失関数の設定
+# 損失関数
 class CELoss(nn.Module):
     def __init__(self, weights=None):
         super(CELoss, self).__init__()
@@ -97,19 +97,19 @@ print("使用デバイス：", device)
 # ネットワークをGPUへ
 net.to(device)
 
-# ネットワークがある程度固定であれば、高速化させる
+# ネットワークがある程度固定であれば高速化させる
 torch.backends.cudnn.benchmark = True
 
 # 画像の枚数
 num_train_imgs = len(dataloaders_dict["train"].dataset)
 num_val_imgs = len(dataloaders_dict["val"].dataset)
 
-# イテレーションカウンタをセット
+# ログファイルの作成
 with open(f'{rootpath}/Histories/{net._get_name()}_{ENCODER}_{criterion._get_name()}.txt', 'w') as f:
     title_list = ["epoch", "\t", "train_loss", "\t", "test_loss", "\n"]
     f.writelines(title_list)
 
-# epochのループ
+# 学習
 num_epochs = 10000
 min_loss = 1e+10
 for epoch in range(num_epochs):
@@ -137,18 +137,18 @@ for epoch in range(num_epochs):
                 outputs = net(imges)
                 loss = criterion(outputs, anno_class_imges) / len(imges)
 
-                if phase == 'train':  # 訓練時
-                    loss.backward()  # 勾配の計算
+                if phase == 'train':
+                    loss.backward()
                     optimizer.step()
                     epoch_train_loss += loss.item() * len(imges)
-                else:  # 検証時
+                else:
                     epoch_val_loss += loss.item() * len(imges)
 
     # epochのphaseごとのlossと正解率
     print('epoch {:05d}/{:05d} || Epoch_TRAIN_Loss:{:.4f} || Epoch_VAL_Loss:{:.4f}'.format(
         epoch + 1, num_epochs, epoch_train_loss / num_train_imgs, epoch_val_loss / num_val_imgs))
 
-    # Lossが最小値が更新されればモデルを保存
+    # Lossの最小値が更新されればモデルを保存
     if epoch_val_loss / num_val_imgs < min_loss:
         min_loss = epoch_val_loss / num_val_imgs
         torch.save(net, f"{rootpath}/Weights/{net._get_name()}_{ENCODER}_{criterion._get_name()}.pth")

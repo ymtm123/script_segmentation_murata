@@ -1,7 +1,3 @@
-# 第3章セマンティックセグメンテーションのデータオーギュメンテーション
-# 注意　アノテーション画像はカラーパレット形式（インデックスカラー画像）となっている。
-
-# パッケージのimport
 import torch
 from torchvision import transforms
 from PIL import Image, ImageOps, ImageFilter
