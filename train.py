@@ -18,7 +18,6 @@ import segmentation_models_pytorch as smp
 
 ###################################
 CLASSES = ["back", "weldline"]  # クラスを登録する
-rootpath = "./data/"
 ###################################
 
 # 初期設定
@@ -30,6 +29,7 @@ torch.cuda.init()
 n_classes = len(CLASSES)
 
 # ファイルパスリスト作成
+rootpath = "./data/"
 train_img_list, train_anno_list, val_img_list, val_anno_list = make_datapath_list(rootpath=rootpath, extension="png")
 
 # Dataset作成
