@@ -6,7 +6,7 @@
   - 現状はpngファイルを想定している
 - SegmentationClassにアノテーション済み画像を保存 
   - [labelpt](https://deecode.net/?p=1493)で作成されたファイルを想定している
-  - この二つのディレクトリには同じファイル名で保存する
+  - PNGImagesと同じファイル名で保存する
   - ファイルの画像枚数も同じになる
 - make_imagesets_file.pyを実行する
   - 訓練用ファイルと検証用ファイルをランダムに設定する
@@ -26,4 +26,5 @@
   - 現状はpngファイルを想定している
 - predict.pyの13行目を変更する
   - 訓練で保存されたWeightsディレクトリのファイルを指定する
+- predict.pyを実行する
 - Predictionsに予測結果が保存される
