@@ -1,4 +1,4 @@
-# script_segmentation_murata
+# semantic_segmentation_dm
 セマンティックセグメンテーションの訓練と実行
 
 ## 訓練の準備
