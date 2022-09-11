@@ -2,9 +2,9 @@
 セマンティックセグメンテーションの訓練と実行
 
 ## 訓練の準備
-- PNGImagesにオリジナル画像を保存
+- ./data/PNGImagesにオリジナル画像を保存
   - 現状はpngファイルを想定している
-- SegmentationClassにアノテーション済み画像を保存 
+- ./data/SegmentationClassにアノテーション済み画像を保存 
   - [labelpt](https://deecode.net/?p=1493)で作成されたファイルを想定している
   - PNGImagesと同じファイル名で保存する
   - ファイルの画像枚数も同じになる
@@ -18,8 +18,8 @@
 - train.pyを実行する
 
 ## 訓練の結果
-- Historiesにログが保存される
-- Weightsに訓練したモデルが保存される
+- ./data/Historiesにログが保存される
+- ./data/Weightsに訓練したモデルが保存される
 
 ## 予測の準備と実行と結果
 - TestImagesに画像を保存する
@@ -27,4 +27,4 @@
 - predict.pyの13行目を変更する
   - 訓練で保存されたWeightsディレクトリのファイルを指定する
 - predict.pyを実行する
-- Predictionsに予測結果が保存される
+- ./data/Predictionsに予測結果が保存される
