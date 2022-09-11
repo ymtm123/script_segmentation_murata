@@ -22,7 +22,7 @@
 - ./data/Weightsに訓練したモデルが保存される
 
 ## 予測の準備と実行と結果
-- TestImagesに画像を保存する
+- ./data/TestImagesに画像を保存する
   - 現状はpngファイルを想定している
 - predict.pyの13行目を変更する
   - 訓練で保存されたWeightsディレクトリのファイルを指定する
