@@ -8,7 +8,7 @@ dst_dir = os.path.join(base_dir, "ImageSets/Segmentation")
 
 train_rate = 0.8
 
-file_paths = glob.glob(f"{src_dir}/*")
+file_paths = glob.glob(f"{src_dir}/*.png")
 file_names = [os.path.basename(p).split(".")[0] for p in file_paths]
 random.shuffle(file_names)
 

@@ -18,7 +18,12 @@ import segmentation_models_pytorch as smp
 
 ###################################
 CLASSES = ["back", "weldline"]  # クラスを登録する
+weighted_index = [1]
 ###################################
+
+weights = np.ones(len(CLASSES))
+for i in weighted_index:
+    weights[i] = 100
 
 # 初期設定
 torch.manual_seed(1234)
@@ -78,7 +83,7 @@ class CELoss(nn.Module):
         return loss
 
 
-criterion = CELoss(weights=torch.Tensor([1., 100.]))
+criterion = CELoss(weights=torch.Tensor(weights))
 
 optimizer = torch.optim.Adam([dict(params=net.parameters(), lr=0.0001)])
 
