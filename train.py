@@ -6,6 +6,8 @@ import random
 import math
 import pandas as pd
 import numpy as np
+from PIL import Image
+from datetime import datetime
 
 import torch
 import torch.utils.data as data
@@ -18,12 +20,7 @@ import segmentation_models_pytorch as smp
 
 ###################################
 CLASSES = ["back", "weldline"]  # クラスを登録する
-weighted_index = [1]
 ###################################
-
-weights = np.ones(len(CLASSES))
-for i in weighted_index:
-    weights[i] = 100
 
 # 初期設定
 torch.manual_seed(1234)
@@ -83,9 +80,26 @@ class CELoss(nn.Module):
         return loss
 
 
+# ロスの重みの計算
+for a, anno_path in enumerate(train_anno_list):
+    image = Image.open(anno_path)
+    array = np.array(image)
+    u, c = np.unique(array, return_counts=True)
+    if a == 0:
+        se_counts = pd.Series(data=c, index=u)
+    else:
+        se_counts = se_counts.add(pd.Series(data=c, index=u), fill_value=0)
+
+weights = se_counts.max() / se_counts
+max_label = se_counts.index.max()
+weights = pd.Series([0 for i in range(max_label)]).add(weights, fill_value=0)
+print('ロスの重み付けの設定完了')
+print(weights)
+
 criterion = CELoss(weights=torch.Tensor(weights))
 
 optimizer = torch.optim.Adam([dict(params=net.parameters(), lr=0.0001)])
+
 
 # スケジューラーの設定
 def lambda_epoch(epoch):
@@ -110,7 +124,8 @@ num_train_imgs = len(dataloaders_dict["train"].dataset)
 num_val_imgs = len(dataloaders_dict["val"].dataset)
 
 # ログファイルの作成
-with open(f'{rootpath}/Histories/{net._get_name()}_{ENCODER}_{criterion._get_name()}.txt', 'w') as f:
+str_now = datetime.now().strftime("%Y%m%d_%H%M%S")
+with open(f'{rootpath}/Histories/{net._get_name()}_{ENCODER}_{criterion._get_name()}_{str_now}.txt', 'w') as f:
     title_list = ["epoch", "\t", "train_loss", "\t", "test_loss", "\n"]
     f.writelines(title_list)
 
@@ -156,11 +171,11 @@ for epoch in range(num_epochs):
     # Lossの最小値が更新されればモデルを保存
     if epoch_val_loss / num_val_imgs < min_loss:
         min_loss = epoch_val_loss / num_val_imgs
-        torch.save(net, f"{rootpath}/Weights/{net._get_name()}_{ENCODER}_{criterion._get_name()}.pth")
+        torch.save(net, f"{rootpath}/Weights/{net._get_name()}_{ENCODER}_{criterion._get_name()}_{str_now}.pth")
 
     # 学習履歴の保存
     log_list = ["{:06d}".format(epoch + 1), "\t",
                 "{:.08f}".format(epoch_train_loss / num_train_imgs), "\t",
                 "{:.08f}".format(epoch_val_loss / num_val_imgs), "\n"]
-    with open(f'{rootpath}/Histories/{net._get_name()}_{ENCODER}_{criterion._get_name()}.txt', 'a') as f:
+    with open(f'{rootpath}/Histories/{net._get_name()}_{ENCODER}_{criterion._get_name()}_{str_now}.txt', 'a') as f:
         f.writelines(log_list)
